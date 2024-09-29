@@ -1,14 +1,14 @@
 #include <am.h>
-#include <rtthread.h>
-#include <klib.h>
 #include <klib-macros.h>
+#include <klib.h>
+#include <rtthread.h>
 
-#define AM_APPS_HEAP_SIZE  0x2000000
+#define AM_APPS_HEAP_SIZE 0x2000000
 #define RT_HW_HEAP_BEGIN heap.start
 #define RT_HW_HEAP_END heap.end
 
 Area am_apps_heap = {}, am_apps_data = {}, am_apps_bss = {};
-uint8_t * am_apps_data_content = NULL;
+uint8_t *am_apps_data_content = NULL;
 
 void rt_hw_board_init() {
   int rt_hw_uart_init(void);
@@ -21,15 +21,18 @@ void rt_hw_board_init() {
 
   uint32_t size = AM_APPS_HEAP_SIZE;
   void *p = NULL;
-  for (; p == NULL && size != 0; size /= 2) { p = rt_malloc(size); }
+  for (; p == NULL && size != 0; size /= 2) {
+    p = rt_malloc(size);
+  }
   am_apps_heap = RANGE(p, p + size);
 
   extern char __am_apps_data_start, __am_apps_data_end;
   extern char __am_apps_bss_start, __am_apps_bss_end;
   am_apps_data = RANGE(&__am_apps_data_start, &__am_apps_data_end);
-  am_apps_bss  = RANGE(&__am_apps_bss_start,  &__am_apps_bss_end);
+  am_apps_bss = RANGE(&__am_apps_bss_start, &__am_apps_bss_end);
   printf("am-apps.data.size = %ld, am-apps.bss.size = %ld\n",
-      am_apps_data.end - am_apps_data.start, am_apps_bss.end - am_apps_bss.start);
+         am_apps_data.end - am_apps_data.start,
+         am_apps_bss.end - am_apps_bss.start);
 
   uint32_t data_size = am_apps_data.end - am_apps_data.start;
   if (data_size != 0) {
@@ -48,7 +51,8 @@ void rt_hw_board_init() {
 #endif
 
 #ifdef RT_USING_HEAP
-  rt_kprintf("heap: [0x%08x - 0x%08x]\n", (rt_ubase_t) RT_HW_HEAP_BEGIN, (rt_ubase_t) RT_HW_HEAP_END);
+  rt_kprintf("heap: [0x%08x - 0x%08x]\n", (rt_ubase_t)RT_HW_HEAP_BEGIN,
+             (rt_ubase_t)RT_HW_HEAP_END);
 #endif
 }
 
